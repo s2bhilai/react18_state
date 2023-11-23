@@ -17,7 +17,6 @@ export default function useFetch(url) {
         } else {
           throw response;
         }
-        setData(response);
       } catch (e) {
         setError(e);
       } finally {
