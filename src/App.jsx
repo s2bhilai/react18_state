@@ -6,6 +6,7 @@ import ProductsComponent from "./ProductsComponent";
 import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
 
 export default function App() {
   //In useState, If we declare the default state as function , then it's evaluated once
@@ -47,6 +48,10 @@ export default function App() {
     });
   }
 
+  function emptyCart() {
+    setCart([]);
+  }
+
   return (
     <>
       <div className="content">
@@ -62,6 +67,10 @@ export default function App() {
             <Route
               path="/cart"
               element={<Cart cart={cart} updateQuantity={updateQuantity} />}
+            />
+            <Route
+              path="/checkout"
+              element={<Checkout cart={cart} emptyCart={emptyCart} />}
             />
           </Routes>
         </main>
