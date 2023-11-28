@@ -39,6 +39,7 @@ export default function App() {
     });
   }
 
+  //Some comments
   function updateQuantity(sku, quantity) {
     setCart((items) => {
       if (quantity === 0) {
@@ -48,6 +49,7 @@ export default function App() {
     });
   }
 
+  //Some comments
   function emptyCart() {
     setCart([]);
   }
