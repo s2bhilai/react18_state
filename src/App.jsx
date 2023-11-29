@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import "./App.css";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -7,52 +7,27 @@ import { Routes, Route } from "react-router-dom";
 import Detail from "./Detail";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import cartReducer from "./cartReducer";
 
+//written outside the component since it needs to run only once.
+let initialCart;
+try {
+  initialCart = JSON.parse(localStorage.getItem("cart")) ?? [];
+} catch {
+  console.error("The cart could not be parsed into json.");
+  initialCart = [];
+}
+
+//Changes 1
 export default function App() {
   //In useState, If we declare the default state as function , then it's evaluated once
   //otherwise if we specify anything without function, it will evaluate for every render.
-  const [cart, setCart] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("cart")) ?? [];
-    } catch {
-      console.error("The cart could not be parsed to JSON");
-      return [];
-    }
-  });
+  const [cart, dispatch] = useReducer(cartReducer, initialCart);
 
+  //Changes 2
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
-
-  function addToCart(id, sku) {
-    setCart((items) => {
-      const itemInCart = items.find((i) => i.sku === sku);
-      if (itemInCart) {
-        //Return the new array with matching item replaced
-        return items.map((i) =>
-          i.sku === sku ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      } else {
-        //Return new array with new item appended
-        return [...items, { id, sku, quantity: 1 }];
-      }
-    });
-  }
-
-  //Some comments
-  function updateQuantity(sku, quantity) {
-    setCart((items) => {
-      if (quantity === 0) {
-        return items.filter((i) => i.sku !== sku);
-      }
-      return items.map((i) => (i.sku === sku ? { ...i, quantity } : i));
-    });
-  }
-
-  //Some comments
-  function emptyCart() {
-    setCart([]);
-  }
 
   return (
     <>
@@ -64,15 +39,15 @@ export default function App() {
             <Route path="/:category" element={<ProductsComponent />} />
             <Route
               path="/:category/:id"
-              element={<Detail addToCart={addToCart} />}
+              element={<Detail dispatch={dispatch} />}
             />
             <Route
               path="/cart"
-              element={<Cart cart={cart} updateQuantity={updateQuantity} />}
+              element={<Cart cart={cart} dispatch={dispatch} />}
             />
             <Route
               path="/checkout"
-              element={<Checkout cart={cart} emptyCart={emptyCart} />}
+              element={<Checkout cart={cart} dispatch={dispatch} />}
             />
           </Routes>
         </main>

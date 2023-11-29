@@ -17,13 +17,17 @@ export default function useFetchAll(urls) {
 
     const promises = urls.map((url) =>
       fetch(process.env.REACT_APP_API_BASE_URL + url).then((response) => {
-        if (response.ok) return response.json();
+        if (response.ok) {
+          return response.json();
+        }
         throw response;
       })
     );
 
     Promise.all(promises)
-      .then((json) => setData(json))
+      .then((json) => {
+        setData(json);
+      })
       .catch((e) => {
         console.error(e);
         setError(e);
