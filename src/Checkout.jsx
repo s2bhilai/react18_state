@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { saveShippingAddress } from "./services/shippingService";
+import { useCart } from "./cartContext";
 
 const STATUS = {
   IDLE: "IDLE",
@@ -14,11 +15,12 @@ const emptyAddress = {
   country: "",
 };
 
-export default function Checkout({ cart, dispatch }) {
+export default function Checkout() {
   const [address, setAddress] = useState(emptyAddress);
   const [status, setStatus] = useState(STATUS.IDLE);
   const [saveError, setSaveError] = useState(null);
   const [touched, setTouched] = useState({});
+  const { dispatch } = useCart();
 
   //Derived state
   const errors = getErrors(address); //If errors is empty object, then form is valid
